@@ -2,39 +2,25 @@ package hellojpa;
 
 import jakarta.persistence.*;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
-
 @Entity
+@SequenceGenerator(name = "MEMBER_SEQ_GENERATOR",
+        sequenceName = "MEMBER_SEQ", //매핑할 데이터베이스 시퀀스 이름
+        initialValue = 1, allocationSize = 50) // 시퀀스 호출 한 번에 50개씩 DB에 미리 생성해놓는다면 여러 문제를 해결할 수 있다.
 public class Member {
 
+    //기본 키 생성 전략을 IDENTITY로 할 경우에는 persist 호출 시점에 바로 INSERT가 날라간다
+    //만약 커밋 시점에 쿼리문이 날라간다면 영속성 컨텍스트에서 PK값을 Id로 지정하는데 그렇게 한다면 PK가 없기 때문이다.
+    //하지만 IDENTITY의 경우 JPA에서는 persist를 할 때 쿼리문을 날리기 때문에 영속성 컨텍스트에 정상적으로 PK값을 넣을 수 있다.
+
+    //SEQUENCE 전략일 때는 나중에 커밋을 하기 전에 시퀀스에서 PK값을 미리 받아와야 하기 때문에
+    //persist 호출 시점에 시퀀스에서 PK값을 가져온다
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+    generator = "MEMBER_SEQ_GENERATOR")
     private Long id;
 
     @Column(name = "name", nullable = false)
     private String username;
-
-    private int age;
-
-    @Enumerated(EnumType.STRING)
-    private RoleType roleType;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdDate;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastModifiedDate;
-
-    private LocalDate testLocalDate;
-    private LocalDateTime testLocalDateTime;
-
-    @Lob
-    private String description;
-
-    @Transient
-    private int temp;
 
     public Member() {
     }
@@ -53,53 +39,5 @@ public class Member {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public RoleType getRoleType() {
-        return roleType;
-    }
-
-    public void setRoleType(RoleType roleType) {
-        this.roleType = roleType;
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Date getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(Date lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public int getTemp() {
-        return temp;
-    }
-
-    public void setTemp(int temp) {
-        this.temp = temp;
     }
 }
