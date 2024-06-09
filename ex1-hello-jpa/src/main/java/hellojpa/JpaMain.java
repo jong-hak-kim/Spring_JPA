@@ -2,6 +2,8 @@ package hellojpa;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 public class JpaMain {
 
     public static void main(String[] args) {
@@ -14,30 +16,30 @@ public class JpaMain {
 
         try {
 
-            Member member1 = new Member();
-            member1.setUsername("A");
+            //저장
 
-            Member member2 = new Member();
-            member2.setUsername("B");
+            Team team = new Team();
+            team.setName("TeamA");
+            em.persist(team);
 
-            Member member3 = new Member();
-            member3.setUsername("C");
+            Member member = new Member();
+            member.setUsername("member1");
+            em.persist(member);
+
+            team.addMember(member);
 
 
+            em.flush();
+            em.clear();
+
+            Team findTeam = em.find(Team.class, team.getId());
+            List<Member> members = findTeam.getMembers();
+
+            System.out.println("=================");
+            System.out.println("members = " + findTeam);
+            System.out.println("=================");
 
 
-            System.out.println("=====================");
-
-            em.persist(member1); //1, 51
-            em.persist(member2); //MEM
-            em.persist(member3); //MEM
-
-            System.out.println("member = " + member1.getId());
-            System.out.println("member = " + member2.getId());
-            System.out.println("member = " + member3.getId());
-            System.out.println("=====================");
-
-            // 커밋 시점에 DB 쿼리가 날라간다
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
