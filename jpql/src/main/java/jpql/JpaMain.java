@@ -1,13 +1,8 @@
-package hellojpa;
+package jpql;
 
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
-import org.hibernate.Hibernate;
 
 import java.util.List;
-import java.util.Set;
 
 public class JpaMain {
 
@@ -21,16 +16,28 @@ public class JpaMain {
 
         try {
 
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
             Member member = new Member();
-            member.setUsername("member1");
+            member.setUsername("관리자");
+            member.setAge(10);
+            member.setType(MemberType.ADMIN);
+
+            member.setTeam(team);
+
             em.persist(member);
 
-            //flush -> commit, query
-
             em.flush();
+            em.clear();
 
-            //결과 0
-            //dbconn.executeQuery("select * from member);
+            String query = "select index(t.members) from Team t";
+            List<Integer> result = em.createQuery(query, Integer.class).getResultList();
+
+            for (Integer s : result) {
+                System.out.println("s = " + s);
+            }
 
             tx.commit();
         } catch (Exception e) {
