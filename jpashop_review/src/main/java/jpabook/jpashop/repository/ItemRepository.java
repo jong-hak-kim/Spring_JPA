@@ -17,6 +17,9 @@ public class ItemRepository {
         if (item.getId() == null) {
             em.persist(item);
         } else {
+            //merge는 변경감지와 거의 비슷하지만
+            //엔티티의 모든 필드를 변경하기 때문에 null이 있으면 null도 데이터베이스에 반영해버리기 때문에
+            //merge보다는 변경감지를 사용하는 것이 좋다
             em.merge(item);
         }
     }
