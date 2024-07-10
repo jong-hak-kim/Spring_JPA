@@ -90,4 +90,14 @@ public class OrderRepository {
         TypedQuery<Order> query = em.createQuery(cq).setMaxResults(1000);
         return query.getResultList();
     }
+
+    //fetch join을 사용하여 한 번에 Order, Member, Delivery를 가져오기
+    //진짜 객체의 값을 다 채워서 가져온다
+    public List<Order> findAllWithMemberDelivery() {
+        return em.createQuery("select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class)
+                .getResultList();
+    }
+
 }
