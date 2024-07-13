@@ -5,12 +5,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
@@ -74,7 +74,7 @@ public class Order {
     //==비즈니스 로직==//
     //주문 취소
     public void cancel() {
-        if(delivery.getStatus() == DeliveryStatus.COMP){
+        if (delivery.getStatus() == DeliveryStatus.COMP) {
             throw new IllegalStateException("이미 배송완료된 상품은 취소가 불가능합니다.");
         }
 
@@ -94,6 +94,4 @@ public class Order {
         }
         return totalPrice;
     }
-
-
 }
